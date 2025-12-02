@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" stylesheets="@imagestyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.HomeController">
    <children>
        <fx:include fx:id="topBar" source="TopBar.fxml" />
-      <ImageView fitHeight="268.0" fitWidth="271.0" layoutX="14.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@Images/24.png" />
-         </image>
-      </ImageView>
-      <DatePicker layoutX="595.0" layoutY="156.0" prefHeight="33.0" prefWidth="251.0" stylesheets="@datepicker.css" />
+      <Group layoutX="610.0">
+         <children>
+            <ImageView fitHeight="194.0" fitWidth="194.0" layoutX="25.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Images/24.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="29.0" fitWidth="26.0" layoutX="122.0" layoutY="131.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@Images/2.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Group>
+      <DatePicker layoutX="23.0" layoutY="151.0" prefHeight="33.0" prefWidth="251.0" stylesheets="@datepicker.css" />
       <TableView layoutX="14.0" layoutY="204.0" prefHeight="287.0" prefWidth="842.0" stylesheets="@tablestyle.css">
         <columns>
           <TableColumn prefWidth="116.79998207092285" text="Patient Name" />
@@ -20,10 +31,10 @@
             <TableColumn prefWidth="602.3999938964844" text="Description" />
         </columns>
       </TableView>
-      <ImageView fitHeight="37.0" fitWidth="35.0" layoutX="148.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@Images/2.png" />
-         </image>
-      </ImageView>
+      <Label layoutX="31.0" layoutY="125.0" prefHeight="18.0" prefWidth="152.0" text="Select the Date " textFill="#031563">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

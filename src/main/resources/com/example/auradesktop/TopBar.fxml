@@ -5,17 +5,17 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="topBar" prefHeight="60.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" stylesheets="@topbutton.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.HomeController">
+<AnchorPane id="topBar" prefHeight="60.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" stylesheets="@topbutton.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.TopBarController">
    <children>
       <ImageView fitHeight="68.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@Images/2.png" />
          </image>
       </ImageView>
-      <Button layoutX="65.0" layoutY="21.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="107.0" style="-fx-background-color: transparent;" text="Home" />
-      <Button layoutX="172.0" layoutY="21.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="107.0" style="-fx-background-color: transparent;" text="Patients" />
-      <Button layoutX="270.0" layoutY="21.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="107.0" style="-fx-background-color: transparent;" text="Calender" />
-      <Button layoutX="381.0" layoutY="21.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="107.0" style="-fx-background-color: transparent;" text="Requests" />
+      <Button layoutX="65.0" layoutY="21.0" mnemonicParsing="false" onAction="#goHome" prefHeight="38.0" prefWidth="107.0" style="-fx-background-color: transparent;" text="Home" />
+      <Button layoutX="172.0" layoutY="21.0" mnemonicParsing="false" onAction="#goPatients" prefHeight="38.0" prefWidth="107.0" style="-fx-background-color: transparent;" text="Patients" />
+      <Button layoutX="270.0" layoutY="21.0" mnemonicParsing="false" onAction="#goCalender" prefHeight="38.0" prefWidth="107.0" style="-fx-background-color: transparent;" text="Calender" />
+      <Button layoutX="381.0" layoutY="21.0" mnemonicParsing="false" onAction="#goRequests" prefHeight="38.0" prefWidth="107.0" style="-fx-background-color: transparent;" text="Requests" />
       <Group layoutX="777.0" layoutY="5.0">
          <children>
             <Button layoutX="9.0" layoutY="5.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="74.0" style="-fx-background-color: transparent;" />
