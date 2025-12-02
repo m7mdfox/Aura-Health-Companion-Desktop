@@ -117,3 +117,41 @@
 .table-view .scroll-bar .thumb:hover {
     -fx-background-color: #0025CC; /* Electric Blue on hover */
 }
+/* ===============================
+   Action Buttons (Add this to tablestyle.css)
+   =============================== */
+
+/* Shared properties for both buttons */
+.btn-accept, .btn-reject {
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 20; /* Pill shape */
+    -fx-padding: 5 15 5 15;    /* Sizing */
+    -fx-cursor: hand;
+}
+
+/* --- ACCEPT BUTTON (Aura Gradient) --- */
+.btn-accept {
+    -fx-background-color: linear-gradient(to right, #0F1120, #0025CC);
+    -fx-text-fill: white;
+}
+
+.btn-accept:hover {
+    /* Lighter gradient and shadow on hover */
+    -fx-background-color: linear-gradient(to right, #15192e, #1a42f5);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 37, 204, 0.4), 8, 0, 0, 0);
+}
+
+/* --- REJECT BUTTON (Red Ghost Style) --- */
+.btn-reject {
+    -fx-background-color: transparent;
+    -fx-border-color: #c91e2b;
+    -fx-border-radius: 20;
+    -fx-text-fill: #c91e2b;
+}
+
+.btn-reject:hover {
+    /* Fills with red on hover */
+    -fx-background-color: #c91e2b;
+    -fx-text-fill: white;
+}

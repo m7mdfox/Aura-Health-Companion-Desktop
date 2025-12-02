@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.media.MediaView?>
-<?import javafx.scene.paint.Color?>
-<?import javafx.scene.paint.LinearGradient?>
-<?import javafx.scene.paint.Stop?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" stylesheets="@buttonstyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.HomeController">
+<AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" stylesheets="@buttonstyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.HomeController">
 
     <children>
 
@@ -36,14 +30,15 @@
                 </LinearGradient>
             </fill>
         </Rectangle>
+      <ImageView fitHeight="522.0" fitWidth="531.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Images/28.png" />
+         </image>
+      </ImageView>
 
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f2f7ff" height="541.0" layoutX="436.0" layoutY="25.0" stroke="BLACK" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="0.1" width="433.0" />
 
         <MediaView fitHeight="200.0" fitWidth="200.0" layoutX="142.0" layoutY="205.0" />
-
-        <PasswordField layoutX="462.0" layoutY="349.0" prefHeight="55.0" prefWidth="381.0" promptText="Password" style="-fx-border-radius: 15; -fx-background-radius: 15;" />
-
-        <TextField layoutX="461.0" layoutY="232.0" prefHeight="55.0" prefWidth="382.0" promptText="Username" style="-fx-background-radius: 15; -fx-border-radius: 15;" />
 
         <ImageView fitHeight="214.0" fitWidth="233.0" layoutX="546.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -96,11 +91,10 @@
         </Label>
 
         <Button layoutX="577.0" layoutY="503.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="150.0" styleClass="gradient-button" text="Login" textFill="#fff8f8" />
-      <ImageView fitHeight="431.0" fitWidth="415.0" layoutX="14.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@Images/28.png" />
-         </image>
-      </ImageView>
+
+        <TextField layoutX="461.0" layoutY="232.0" prefHeight="55.0" prefWidth="382.0" promptText="Username" style="-fx-background-radius: 15; -fx-border-radius: 15;" />
+
+        <PasswordField layoutX="462.0" layoutY="349.0" prefHeight="55.0" prefWidth="381.0" promptText="Password" style="-fx-border-radius: 15; -fx-background-radius: 15;" />
 
     </children>
 
