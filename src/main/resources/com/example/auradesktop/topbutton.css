@@ -1,0 +1,52 @@
+/* ===============================
+   Aura Gradient Button
+   =============================== */
+
+.button {
+    /* 1. Normal State: Solid Gradient Background */
+    -fx-background-color: linear-gradient(to right, #0F1120, #0025CC);
+    -fx-background-radius: 30; /* High radius for pill shape, or 8 for rounded rectangle */
+    -fx-background-insets: 0;
+
+    /* Text Styling */
+    -fx-text-fill: #0F1120;
+    -fx-font-weight: thin;
+    -fx-font-size: 14px;
+    -fx-padding: 10 24 10 24; /* Top Right Bottom Left */
+
+    /* Subtle Shadow */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 37, 204, 0.3), 10, 0, 0, 4);
+    -fx-cursor: hand;
+}
+
+/* ===============================
+   HOVER STATE (The Magic)
+   =============================== */
+.button:hover {
+    /* To make the text gradient visible, the background must be light.
+       We also simulate a GRADIENT BORDER here.
+
+       Layer 1: The Aura Gradient (acts as the border)
+       Layer 2: White background (inset by 2px)
+    */
+    -fx-background-color: linear-gradient(to right, #0F1120, #0025CC), white;
+    -fx-background-insets: 0, 2; /* The '2' is the border thickness */
+    -fx-background-radius: 30, 28; /* Adjust inner radius to fit inside outer */
+
+    /* THIS IS THE TEXT GRADIENT */
+    -fx-text-fill: linear-gradient(to right, #0F1120, #0025CC);
+}
+
+/* ===============================
+   ARMED / CLICKED STATE
+   =============================== */
+.button:armed {
+    /* Shrink slightly or change color to show click */
+    -fx-scale-x: 0.96;
+    -fx-scale-y: 0.96;
+
+    /* Make it solid darker blue on click */
+    -fx-background-color: #0F1120;
+    -fx-background-insets: 0;
+    -fx-text-fill: white;
+}

@@ -1,0 +1,137 @@
+/* ===============================
+   Main Input Field & Button
+   =============================== */
+
+/* The Container */
+.date-picker {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+/* The Text Input Area */
+.date-picker > .text-field {
+    -fx-background-color: white;
+    -fx-background-radius: 8 0 0 8; /* Round left corners only */
+    -fx-border-color: #0F1120;      /* Dark Navy border */
+    -fx-border-width: 1;
+    -fx-border-radius: 8 0 0 8;
+    -fx-padding: 8px;
+    -fx-font-size: 13px;
+    -fx-text-fill: white;
+}
+
+/* The Text Input - Focused State */
+.date-picker > .text-field:focused {
+    -fx-border-color: #0025CC; /* Changes to Electric Blue on click */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 37, 204, 0.2), 5, 0, 0, 0);
+}
+
+/* The Calendar Button (Right Side) */
+.date-picker > .arrow-button {
+    /* The Aura Gradient */
+    -fx-background-color: linear-gradient(to right, #0F1120, #0025CC);
+    -fx-background-radius: 0 8 8 0; /* Round right corners only */
+    -fx-cursor: hand;
+    -fx-padding: 0 12px; /* Make the button a bit wider */
+}
+
+/* The Icon inside the button */
+.date-picker > .arrow-button > .arrow {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-padding: 4px; /* Size of the icon */
+    -fx-shape: "M 0 0 H 14 V 14 H 0 Z M 2 4 V 12 H 12 V 4 H 2 Z M 3 2 H 4 V 3 H 3 Z M 6 2 H 7 V 3 H 6 Z M 9 2 H 10 V 3 H 9 Z"; /* Optional: Custom SVG calendar path, or leave default */
+    -fx-scale-shape: true;
+}
+
+/* Hover effect for the button */
+.date-picker > .arrow-button:hover {
+    -fx-background-color: linear-gradient(to right, #15192e, #1a42f5); /* Slightly lighter gradient */
+}
+
+
+/* ===============================
+   The Popup Calendar (When clicked)
+   =============================== */
+
+/* The main popup window styling */
+.date-picker-popup {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0, 0, 2);
+    -fx-border-color: #0F1120;
+    -fx-border-width: 1px;
+}
+
+/* The Top Header (Month & Year) */
+.date-picker-popup > .month-year-pane {
+    /* Aura Gradient Header */
+    -fx-background-color: linear-gradient(to right, #0F1120, #0025CC);
+    -fx-background-insets: 0;
+}
+
+/* Month/Year Label Text */
+.date-picker-popup > .month-year-pane > .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* The Navigation Arrows (< and >) in the header */
+.date-picker-popup > .month-year-pane .spinner .button .left-arrow,
+.date-picker-popup > .month-year-pane .spinner .button .right-arrow {
+    -fx-background-color: white; /* White arrows to stand out against gradient */
+}
+
+/* Hover state for navigation arrows */
+.date-picker-popup > .month-year-pane .spinner .button:hover .left-arrow,
+.date-picker-popup > .month-year-pane .spinner .button:hover .right-arrow {
+    -fx-background-color: #dce3ff;
+}
+
+
+/* ===============================
+   Calendar Days Grid
+   =============================== */
+
+/* Background of the grid area */
+.date-picker-popup > .calendar-grid {
+    -fx-background-color: white;
+}
+
+/* Weekday names (Mon, Tue, Wed...) */
+.date-picker-popup > .calendar-grid > .day-name-cell {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 10px;
+}
+
+/* Individual Day Cells */
+.date-picker-popup > .calendar-grid > .day-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #0F1120;
+    -fx-alignment: CENTER;
+    -fx-border-color: transparent;
+}
+
+/* Hover over a day */
+.date-picker-popup > .calendar-grid > .day-cell:hover {
+    -fx-background-color: #dce3ff; /* Light Aura Blue */
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+/* Selected Day (The Active Date) */
+.date-picker-popup > .calendar-grid > .selected {
+    -fx-background-color: #0025CC; /* Electric Blue */
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+    -fx-font-weight: bold;
+}
+
+/* "Today" styling (when it is not selected) */
+.date-picker-popup > .calendar-grid > .today {
+    -fx-border-color: #0025CC;
+    -fx-border-radius: 4;
+    -fx-background-color: #f4f6ff;
+}

@@ -1,0 +1,119 @@
+/* ===============================
+   Aura Theme TableView Styling
+   =============================== */
+
+.table-view {
+    /* Transparent background to allow rounded corners to show cleanly */
+    -fx-background-color: transparent;
+
+    /* Soft shadow for depth ("Fancy" factor) */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 0, 5);
+
+    /* Rounded corners for the whole table */
+    -fx-background-radius: 10;
+}
+
+/* ===============================
+   Header Styling (The Gradient)
+   =============================== */
+
+/* The main header background container */
+.table-view .column-header-background {
+    /* THE AURA GRADIENT: Dark Navy -> Electric Blue */
+    -fx-background-color: linear-gradient(to right, #0F1120 0%, #0025CC 100%);
+
+    /* Rounded top corners only */
+    -fx-background-radius: 10 10 0 0;
+    -fx-background-insets: 0;
+}
+
+/* Individual headers */
+.table-view .column-header {
+    -fx-background-color: transparent; /* Let the gradient show through */
+    -fx-border-color: rgba(255, 255, 255, 0.1); /* Subtle separator */
+    -fx-border-width: 0 1 0 0; /* Vertical lines only */
+    -fx-padding: 12px; /* More breathing room */
+}
+
+/* Header Text */
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(one-pass-box, black, 2, 0.5, 0, 0); /* Text shadow for readability */
+}
+
+/* The "Filler" (Empty space on the right of headers) */
+.table-view .filler {
+    /* Match the end of your gradient so it blends seamlessly */
+    -fx-background-color: #0025CC;
+    -fx-background-radius: 0 10 0 0;
+}
+
+/* ===============================
+   Row & Cell Styling
+   =============================== */
+
+/* Default Rows */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent; /* Clean look, no grid lines */
+}
+
+/* Zebra Striping (Optional: makes reading easier) */
+.table-row-cell:odd {
+    -fx-background-color: #f4f6ff; /* Very faint blue-white */
+}
+
+/* Hover Effect */
+.table-row-cell:hover {
+    -fx-background-color: #dce3ff; /* Light version of your aura blue */
+    -fx-cursor: hand;
+}
+
+/* Selected Row */
+.table-row-cell:selected {
+    /* Use the electric blue from your gradient */
+    -fx-background-color: #0025CC;
+
+    /* Add a subtle glow/shadow to the selection */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 37, 204, 0.4), 8, 0, 0, 0);
+}
+
+/* Selected Row Text */
+.table-row-cell:selected .text {
+    -fx-fill: white;
+}
+
+/* Cell Content */
+.table-cell {
+    -fx-text-fill: #0F1120; /* Dark Navy for text (high contrast) */
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 5 0 5 10;
+}
+
+/* Selected Cell Content */
+.table-cell:selected {
+    -fx-text-fill: white;
+}
+
+/* ===============================
+   Scrollbar Styling (To match the theme)
+   =============================== */
+
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #0F1120; /* Dark Navy Thumb */
+    -fx-background-radius: 5;
+}
+
+.table-view .scroll-bar .thumb:hover {
+    -fx-background-color: #0025CC; /* Electric Blue on hover */
+}

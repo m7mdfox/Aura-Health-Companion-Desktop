@@ -1,0 +1,24 @@
+.gradient-button {
+    -fx-background-color: linear-gradient(to right, #0F1120, #0025CC);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+    -fx-border-radius: 15;
+}
+
+/* Hover */
+.gradient-button:hover {
+    -fx-background-color: linear-gradient(to right, #16192F, #0030FF);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* Pressed */
+.gradient-button:pressed {
+    -fx-background-color: linear-gradient(to right, #0A0C18, #001DA0);
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
