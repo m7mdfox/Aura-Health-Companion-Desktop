@@ -15,6 +15,7 @@
 
 <AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.HomeController">
    <children>
+      <fx:include fx:id="topBar" source="TopBar.fxml" />
       <ImageView cache="true" depthTest="DISABLE" fitHeight="400.0" fitWidth="399.0" layoutX="456.0" layoutY="51.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" styleClass="imagestyle">
          <image>
             <Image url="@Images/25.png" />

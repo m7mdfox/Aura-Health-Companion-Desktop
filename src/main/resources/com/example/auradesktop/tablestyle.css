@@ -20,7 +20,7 @@
 /* The main header background container */
 .table-view .column-header-background {
     /* THE AURA GRADIENT: Dark Navy -> Electric Blue */
-    -fx-background-color: linear-gradient(to right, #0F1120 0%, #0025CC 100%);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #0F1120 0%, #0025CC 100%);
 
     /* Rounded top corners only */
     -fx-background-radius: 10 10 0 0;
@@ -40,7 +40,7 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
-    -fx-alignment: CENTER;
+    -fx-alignment: center;
     -fx-effect: dropshadow(one-pass-box, black, 2, 0.5, 0, 0); /* Text shadow for readability */
 }
 
@@ -91,7 +91,7 @@
 .table-cell {
     -fx-text-fill: #0F1120; /* Dark Navy for text (high contrast) */
     -fx-font-size: 13px;
-    -fx-alignment: CENTER_LEFT;
+    -fx-alignment: center-left;
     -fx-padding: 5 0 5 10;
 }
 
@@ -132,13 +132,13 @@
 
 /* --- ACCEPT BUTTON (Aura Gradient) --- */
 .btn-accept {
-    -fx-background-color: linear-gradient(to right, #0F1120, #0025CC);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #0F1120, #0025CC);
     -fx-text-fill: white;
 }
 
 .btn-accept:hover {
     /* Lighter gradient and shadow on hover */
-    -fx-background-color: linear-gradient(to right, #15192e, #1a42f5);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #15192e, #1a42f5);
     -fx-effect: dropshadow(three-pass-box, rgba(0, 37, 204, 0.4), 8, 0, 0, 0);
 }
 

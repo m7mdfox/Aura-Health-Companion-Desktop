@@ -6,17 +6,20 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.RequestsController">
+    <stylesheets>
+        <URL value="@tablestyle.css" />
+        <URL value="@buttonstyle.css" />
+    </stylesheets>
+
    <children>
-      <TableView fx:id="requestsTable" layoutX="20.0" layoutY="137.0" prefHeight="406.0" prefWidth="447.0">
+        <fx:include fx:id="topBar" source="TopBar.fxml" />
+      <TableView fx:id="requestsTable" layoutX="22.0" layoutY="137.0" prefHeight="406.0" prefWidth="447.0">
         <columns>
           <TableColumn fx:id="nameColumn" prefWidth="122.0" text="Name" />
           <TableColumn fx:id="timeColumn" prefWidth="131.99998474121094" text="Time" />
           <TableColumn fx:id="statusColumn" prefWidth="192.80001831054688" text="Status" />
         </columns>
-         <stylesheets>
-            <URL value="@tablestyle.css" />
-            <URL value="@buttonstyle.css" />
-         </stylesheets>
+
       </TableView>
 
       <ImageView fitHeight="437.0" fitWidth="451.0" layoutX="418.0" layoutY="122.0" pickOnBounds="true" preserveRatio="true">
