@@ -9,7 +9,7 @@ public class LoginApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/auradesktop/login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/auradesktop/Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         stage.setTitle("Aura Health Companion");

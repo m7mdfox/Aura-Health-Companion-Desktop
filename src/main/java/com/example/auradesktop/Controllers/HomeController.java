@@ -1,26 +1,31 @@
 package com.example.auradesktop.Controllers;
 
+import com.example.auradesktop.UserSession;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 public class HomeController {
 
-    // Ensure this field is injected from the FXML (fx:id="tableView")
     @FXML
     private TableView<?> tableView;
 
-    // initialize() may be called before injection if fx:id/controller mismatch exists;
-    // guard the existing logic to avoid NullPointerException and provide a helpful warning.
+    @FXML
+    private Label doctorNameLabel;
+
     @FXML
     public void initialize() {
-        if (tableView != null) {
-            // Explicitly load the stylesheet for the TableView
-            tableView.getStylesheets().add(getClass().getResource("/com/example/auradesktop/tablestyle.css").toExternalForm());
+        // 1. Set the Doctor's Name from the Session
+        UserSession session = UserSession.getInstance();
+        if (session.getDoctorName() != null && !session.getDoctorName().isEmpty()) {
+            doctorNameLabel.setText("Dr. " + session.getDoctorName());
         } else {
-            // Minimal non-invasive logging to help debug injection mismatch.
-            System.err.println("Warning: HomeController.tableView is null. Check fx:id in FXML and @FXML injection.");
-            // Optionally continue other safe initialization:
-            // ...existing code that does not depend on tableView...
+            doctorNameLabel.setText("Dr. Guest");
+        }
+
+        // 2. Initialize TableView (if it exists in your logic)
+        if (tableView != null) {
+            tableView.getStylesheets().add(getClass().getResource("/com/example/auradesktop/tablestyle.css").toExternalForm());
         }
     }
 }

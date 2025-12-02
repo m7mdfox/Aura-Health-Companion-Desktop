@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="Home" prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.HomeController">
+<AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.HomeController">
    <children>
       <fx:include fx:id="topBar" source="TopBar.fxml" />
       <ImageView cache="true" depthTest="DISABLE" fitHeight="400.0" fitWidth="399.0" layoutX="456.0" layoutY="51.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" styleClass="imagestyle">
@@ -19,11 +23,13 @@
             <Cursor fx:constant="DEFAULT" />
          </cursor>
       </ImageView>
-      <Label layoutX="40.0" layoutY="177.0" prefHeight="27.0" prefWidth="218.0" style="-fx-text-fill: #00BFA5;" text="Dr.Name" textFill="#00bfa5">
+
+      <Label fx:id="doctorNameLabel" layoutX="40.0" layoutY="177.0" prefHeight="27.0" prefWidth="350.0" style="-fx-text-fill: #00BFA5;" text="Dr. Name" textFill="#00bfa5">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
+
       <Label layoutX="40.0" layoutY="215.0" prefHeight="54.0" prefWidth="389.0" style="-fx-text-fill: #000000;" text="WELCOME TO AURA">
          <font>
             <Font size="36.0" />

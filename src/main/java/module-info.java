@@ -7,6 +7,8 @@ module com.example.auradesktop {
 
     requires com.dlsc.formsfx;
     requires com.almasb.fxgl.all;
+    requires java.net.http;
+    requires com.google.gson;
 
     // For FXML loading
     opens com.example.auradesktop to javafx.fxml;

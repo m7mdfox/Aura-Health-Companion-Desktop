@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" stylesheets="@imagestyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.HomeController">
+<AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" stylesheets="@imagestyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.CalenderController">
    <children>
        <fx:include fx:id="topBar" source="TopBar.fxml" />
       <Group layoutX="610.0">
