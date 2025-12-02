@@ -1,0 +1,64 @@
+/* Styling the search field in the sidebar */
+.search-field {
+    -fx-background-color: #E8EEF6;
+    -fx-background-radius: 10;
+    -fx-text-fill: #333333;
+}
+
+/* --- CONTACT LIST (Sidebar) --- */
+.contact-item {
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+}
+
+.contact-item:hover {
+    -fx-background-color: #E8EEF6;
+}
+
+/* Force all labels inside the contact item to be dark by default */
+.contact-item .label {
+    -fx-text-fill: #1a1d2e; /* Dark Blue/Black for visibility */
+}
+
+/* --- SCROLLPANE CLEANUP --- */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 5;
+    -fx-opacity: 0.5;
+}
+
+/* --- MESSAGE BUBBLES --- */
+
+/* Received Message (Gray/White) */
+.message-bubble-received {
+    /* Changed from #F8F9FB to #E9EFF6 for better contrast against white */
+    -fx-background-color: #E9EFF6;
+    -fx-background-radius: 15 15 15 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 2, 0, 0, 1);
+    -fx-padding: 10 15 10 15;
+}
+
+/* CRITICAL FIX: Target the Label inside the received bubble specifically */
+.message-bubble-received .label {
+    -fx-text-fill: #1a1d2e; /* Dark text so it is readable */
+}
+
+/* Sent Message (Blue) */
+.message-bubble-sent {
+    -fx-background-color: #0944ef;
+    -fx-background-radius: 15 15 0 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(9, 68, 239, 0.3), 5, 0, 0, 2);
+    -fx-padding: 10 15 10 15;
+}
+
+/* Target the Label inside sent bubble to ensure it stays white */
+.message-bubble-sent .label {
+    -fx-text-fill: white;
+}
