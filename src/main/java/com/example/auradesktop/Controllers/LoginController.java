@@ -14,7 +14,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginController {
-
     @FXML private MediaView mediaView;
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
@@ -36,29 +34,28 @@ public class LoginController {
     private final Gson gson = new Gson();
 
     public void initialize() {
-        playIntroVideo();
-
+       // playIntroVideo();
         // Optional: Allow pressing "Enter" to login
         passwordField.setOnAction(event -> handleLogin());
     }
 
-    private void playIntroVideo() {
-        try {
+    //private void playIntroVideo() {
+        //try {
             // FIXED: Use relative path. Ensure the video is in resources/com/example/auradesktop/videos/
             // If the file name has spaces, URI encoding might be needed, but simple names are safer.
-            String videoPath = getClass().getResource("/com/example/auradesktop/videos/Modern A Letter Startup Company Logo (video-converter.com).mp4").toExternalForm();
+            //String videoPath = getClass().getResource("/com/example/auradesktop/videos/Modern A Letter Startup Company Logo (video-converter.com).mp4").toExternalForm();
 
-            Media media = new Media(videoPath);
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            //Media media = new Media(videoPath );
+           // MediaPlayer mediaPlayer = new MediaPlayer(media);
 
-            mediaPlayer.setAutoPlay(true);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-            mediaView.setMediaPlayer(mediaPlayer);
+           // mediaPlayer.setAutoPlay(true);
+           // mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            //mediaView.setMediaPlayer(mediaPlayer);
 
-        } catch (Exception e) {
-            System.err.println("Video failed to load: " + e.getMessage());
-        }
-    }
+       // } catch (Exception e) {
+         //   System.err.println("Video failed to load: " + e.getMessage());
+      //  }
+   // }
 
     @FXML
     private void handleLogin() {

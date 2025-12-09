@@ -16,7 +16,6 @@ public class ChatContact {
         this.unreadCount = unreadCount;
         this.isOnline = isOnline;
     }
-
     // Getters
     public String getName() { return name; }
     public String getLastMessage() { return lastMessage; }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="topBar" prefHeight="60.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" stylesheets="@topbutton.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.TopBarController">
+<AnchorPane id="topBar" prefHeight="60.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.TopBarController">
    <children>
       <ImageView fitHeight="68.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -37,4 +38,8 @@
          </children>
       </Group>
    </children>
+   <stylesheets>
+      <URL value="@topbutton.css" />
+      <URL value="@imagestyle.css" />
+   </stylesheets>
 </AnchorPane>

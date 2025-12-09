@@ -12,6 +12,11 @@
     </stylesheets>
 
    <children>
+      <ImageView fitHeight="539.0" fitWidth="518.0" layoutX="454.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Images/27.png" />
+         </image>
+      </ImageView>
         <fx:include fx:id="topBar" source="TopBar.fxml" />
       <TableView fx:id="requestsTable" layoutX="22.0" layoutY="137.0" prefHeight="406.0" prefWidth="447.0">
         <columns>
@@ -20,10 +25,5 @@
           <TableColumn fx:id="statusColumn" prefWidth="192.80001831054688" text="Status" />
         </columns>
       </TableView>
-      <ImageView fitHeight="437.0" fitWidth="451.0" layoutX="418.0" layoutY="122.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@Images/27.png" />
-         </image>
-      </ImageView>
    </children>
 </AnchorPane>
