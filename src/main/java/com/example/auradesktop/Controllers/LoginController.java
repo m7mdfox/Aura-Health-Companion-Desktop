@@ -29,23 +29,25 @@ public class LoginController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private Button loginButton;
-    @FXML private Label errorLabel; // Add this to your FXML to show errors
+    @FXML private Label errorLabel;
 
     private final String API_URL = "http://localhost:4000/api/doctors/login";
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+
+    // --- FIX: FORCE HTTP 1.1 ---
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
+            .build();
+
     private final Gson gson = new Gson();
 
     public void initialize() {
         playIntroVideo();
-
-        // Optional: Allow pressing "Enter" to login
         passwordField.setOnAction(event -> handleLogin());
     }
 
     private void playIntroVideo() {
         try {
-            // FIXED: Use relative path. Ensure the video is in resources/com/example/auradesktop/videos/
-            // If the file name has spaces, URI encoding might be needed, but simple names are safer.
+            // Ensure this path is correct in your resources folder
             String videoPath = getClass().getResource("/com/example/auradesktop/videos/Modern A Letter Startup Company Logo (video-converter.com).mp4").toExternalForm();
 
             Media media = new Media(videoPath);
@@ -70,26 +72,25 @@ public class LoginController {
             return;
         }
 
-        disableControls(true); // Prevent double clicking
+        disableControls(true);
 
-        // 1. Create JSON Payload
         Map<String, String> data = new HashMap<>();
         data.put("email", email);
         data.put("password", password);
         String jsonBody = gson.toJson(data);
 
-        // 2. Build Request
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
-        // 3. Send Async Request
         httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(this::processResponse)
                 .exceptionally(e -> {
                     Platform.runLater(() -> {
+                        // Print full stack trace to console for easier debugging
+                        e.printStackTrace();
                         showError("Server error: " + e.getMessage());
                         disableControls(false);
                     });
@@ -102,22 +103,21 @@ public class LoginController {
             int statusCode = response.statusCode();
             String responseBody = response.body();
 
+            System.out.println("Status: " + statusCode); // Debug
+            System.out.println("Body: " + responseBody); // Debug
+
             if (statusCode == 200) {
-                // Success!
                 try {
                     JsonObject json = JsonParser.parseString(responseBody).getAsJsonObject();
                     String token = json.get("token").getAsString();
                     JsonObject doctorObj = json.get("doctor").getAsJsonObject();
 
-                    // Save to Session
                     UserSession session = UserSession.getInstance();
                     session.setToken(token);
                     session.setDoctorId(doctorObj.get("_id").getAsString());
                     session.setDoctorName(doctorObj.get("name").getAsString());
 
-                    System.out.println("Login Successful for: " + session.getDoctorName());
-
-                    // Navigate to Dashboard
+                    System.out.println("Login Successful: " + session.getDoctorName());
                     goToDashboard();
 
                 } catch (Exception e) {
@@ -125,7 +125,6 @@ public class LoginController {
                     e.printStackTrace();
                 }
             } else {
-                // Login Failed (400, 404, etc)
                 try {
                     JsonObject json = JsonParser.parseString(responseBody).getAsJsonObject();
                     String errorMsg = json.has("error") ? json.get("error").getAsString() : "Login failed";
@@ -140,7 +139,6 @@ public class LoginController {
 
     private void goToDashboard() {
         try {
-            // Load your main dashboard FXML here
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/auradesktop/Home.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) loginButton.getScene().getWindow();
@@ -157,13 +155,13 @@ public class LoginController {
             errorLabel.setText(message);
             errorLabel.setStyle("-fx-text-fill: red;");
         } else {
-            System.out.println("Error: " + message);
+            System.err.println("Error Label missing in FXML. Message: " + message);
         }
     }
 
     private void disableControls(boolean disable) {
-        loginButton.setDisable(disable);
-        emailField.setDisable(disable);
-        passwordField.setDisable(disable);
+        if (loginButton != null) loginButton.setDisable(disable);
+        if (emailField != null) emailField.setDisable(disable);
+        if (passwordField != null) passwordField.setDisable(disable);
     }
 }

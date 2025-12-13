@@ -1,6 +1,9 @@
 package com.example.auradesktop.Controllers;
 
-import com.example.auradesktop.models.RequestModel;
+import com.example.auradesktop.UserSession;
+import com.example.auradesktop.models.Appointment;
+import com.example.auradesktop.services.DoctorApiService;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,86 +15,96 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class RequestsController implements Initializable {
 
-    @FXML private TableView<RequestModel> requestsTable;
-    @FXML private TableColumn<RequestModel, String> nameColumn;
-    @FXML private TableColumn<RequestModel, String> timeColumn;
+    @FXML private TableView<Appointment> requestsTable;
+    @FXML private TableColumn<Appointment, String> nameColumn;
+    @FXML private TableColumn<Appointment, String> timeColumn;
+    @FXML private TableColumn<Appointment, Void> statusColumn;
 
-    // This column holds Void because it doesn't display text, it displays nodes (buttons)
-    @FXML private TableColumn<RequestModel, Void> statusColumn;
-
-    // The list that holds your data
-    ObservableList<RequestModel> requestList = FXCollections.observableArrayList();
+    private ObservableList<Appointment> requestList = FXCollections.observableArrayList();
+    private DoctorApiService apiService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadData();
+        apiService = new DoctorApiService();
+
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("patientName")); // Matches getter in model
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+
+        addButtonToTable();
+        loadPendingAppointments();
     }
 
-    private void loadData() {
-        // 1. Set up standard text columns
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+    // In RequestsController.java
 
-        // 2. Add dummy data to test
-        requestList.add(new RequestModel("Alice Blue", "10:30 AM"));
-        requestList.add(new RequestModel("Mark Dark", "12:00 PM"));
-        requestList.add(new RequestModel("Sarah Sky", "02:15 PM"));
+    private void loadPendingAppointments() {
+        String doctorId = UserSession.getInstance().getDoctorId();
 
-        requestsTable.setItems(requestList);
+        apiService.getAppointments(doctorId).thenAccept(appointments -> {
+            System.out.println("Total fetched: " + appointments.size());
 
-        // 3. Create the Custom Button Cell
-        addButtonToTable();
+            // --- FIX: CHANGE "pending" TO "requested" ---
+            var pending = appointments.stream()
+                    .filter(a -> "requested".equalsIgnoreCase(a.getStatus()))
+                    .collect(Collectors.toList());
+
+            System.out.println("Filtered requests: " + pending.size());
+
+            Platform.runLater(() -> {
+                requestList.setAll(pending);
+                requestsTable.setItems(requestList);
+            });
+        });
     }
 
     private void addButtonToTable() {
-        Callback<TableColumn<RequestModel, Void>, TableCell<RequestModel, Void>> cellFactory = new Callback<>() {
+        Callback<TableColumn<Appointment, Void>, TableCell<Appointment, Void>> cellFactory = new Callback<>() {
             @Override
-            public TableCell<RequestModel, Void> call(final TableColumn<RequestModel, Void> param) {
+            public TableCell<Appointment, Void> call(final TableColumn<Appointment, Void> param) {
                 return new TableCell<>() {
-
                     private final Button acceptBtn = new Button("Accept");
                     private final Button rejectBtn = new Button("Reject");
-                    private final HBox pane = new HBox(10, acceptBtn, rejectBtn); // 10 is spacing between buttons
+                    private final HBox pane = new HBox(10, acceptBtn, rejectBtn);
 
                     {
-                        // Apply the CSS classes we created earlier
                         acceptBtn.getStyleClass().add("btn-accept");
                         rejectBtn.getStyleClass().add("btn-reject");
 
-                        // --- ACCEPT LOGIC ---
                         acceptBtn.setOnAction(event -> {
-                            RequestModel data = getTableView().getItems().get(getIndex());
-                            System.out.println("Accepted request from: " + data.getName());
-                            // Add logic here (e.g., update database)
+                            Appointment appt = getTableView().getItems().get(getIndex());
+                            handleAction(appt, "confirmed");
                         });
 
-                        // --- REJECT LOGIC ---
                         rejectBtn.setOnAction(event -> {
-                            RequestModel data = getTableView().getItems().get(getIndex());
-
-                            // Remove from table
-                            getTableView().getItems().remove(data);
-
-                            System.out.println("Rejected request from: " + data.getName());
+                            Appointment appt = getTableView().getItems().get(getIndex());
+                            handleAction(appt, "cancelled");
                         });
                     }
 
                     @Override
                     protected void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(pane);
-                        }
+                        setGraphic(empty ? null : pane);
                     }
                 };
             }
         };
-
         statusColumn.setCellFactory(cellFactory);
+    }
+
+    private void handleAction(Appointment appt, String status) {
+        apiService.updateStatus(appt.getId(), status).thenAccept(success -> {
+            Platform.runLater(() -> {
+                if (success) {
+                    requestList.remove(appt); // Remove row from table
+                    System.out.println("Appointment " + status);
+                } else {
+                    System.err.println("Failed to update status");
+                }
+            });
+        });
     }
 }

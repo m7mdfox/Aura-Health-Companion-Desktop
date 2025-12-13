@@ -1,20 +1,31 @@
-module com.example.auradesktop {
+module Aura.Desktop {
+    requires com.google.gson;
+    requires java.net.http;
+    requires javafx.base;
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
     requires javafx.media;
+    requires org.json;
 
-    // calendarfx removed: using JavaFX built-in DatePicker instead
+    // Socket.IO dependencies
+    requires socket.io.client;
+    requires engine.io.client;
 
-    requires com.dlsc.formsfx;
-    requires com.almasb.fxgl.all;
-    requires java.net.http;
-    requires com.google.gson;
+    // --- EXPORTS ---
+    // Allow JavaFX Graphics to start the App
+    exports com.example.auradesktop.Applications to javafx.graphics;
 
-    // For FXML loading
-    opens com.example.auradesktop to javafx.fxml;
+    // --- OPENS (Permissions) ---
+
+    // Allow FXML Loader to access Controllers
+    opens com.example.auradesktop.Applications to javafx.fxml;
     opens com.example.auradesktop.Controllers to javafx.fxml;
 
-    // ⚠ JavaFX needs access to Application class
-    exports com.example.auradesktop.Applications;
+    // Allow GSON (JSON) AND JavaFX (Tables) to access Models
+    // This fixes your crash:
+    opens com.example.auradesktop.models to com.google.gson, javafx.base;
+
+    // If you use PropertyValueFactory in other packages, you might need to export/open them too.
     exports com.example.auradesktop;
 }

@@ -1,13 +1,16 @@
 package com.example.auradesktop.Controllers;
 
-import com.example.auradesktop.models.ChatContact; // Make sure package name matches your project (Models vs models)
+import com.example.auradesktop.UserSession;
+import com.example.auradesktop.models.Appointment;
 import com.example.auradesktop.models.ChatMessage;
+import com.example.auradesktop.services.DoctorApiService;
+import io.socket.client.IO;
+import io.socket.client.Socket;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -16,17 +19,22 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import org.json.JSONObject;
 
+import java.net.URI;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.time.Instant; // IMPORT THIS
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class PatientsController implements Initializable {
 
-    // --- FXML Bindings ---
     @FXML private VBox patientsListContainer;
     @FXML private ScrollPane chatScrollPane;
     @FXML private VBox chatMessagesContainer;
@@ -34,189 +42,206 @@ public class PatientsController implements Initializable {
     @FXML private Label currentChatNameLabel;
     @FXML private Label currentChatStatusLabel;
 
-    // --- State ---
-    private ChatContact activeContact;
+    private Appointment activeAppointment;
+    private Socket socket;
+    private DoctorApiService apiService;
+    private String currentDoctorId;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Auto-scroll to bottom
+        apiService = new DoctorApiService();
+        currentDoctorId = UserSession.getInstance().getDoctorId();
+
         chatMessagesContainer.heightProperty().addListener((obs, old, val) -> chatScrollPane.setVvalue(1.0));
 
-        // Enter key listener
         messageInputField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) onSendMessage();
         });
 
-        // --- BACKEND DEVELOPER: REMOVE THIS TEST DATA LATER ---
-        loadTestData();
+        initSocket();
+        loadConfirmedAppointments();
     }
 
-    // ==========================================================
-    //                 API FOR BACKEND DEVELOPER
-    // ==========================================================
+    private void loadConfirmedAppointments() {
+        apiService.getAppointments(currentDoctorId).thenAccept(appointments -> {
+            List<Appointment> confirmed = appointments.stream()
+                    .filter(a -> "confirmed".equalsIgnoreCase(a.getStatus()))
+                    .collect(Collectors.toList());
 
-    public void loadContactList(List<ChatContact> contacts) {
-        patientsListContainer.getChildren().clear();
-        for (ChatContact contact : contacts) {
-            HBox contactNode = createContactNode(contact);
-            patientsListContainer.getChildren().add(contactNode);
-        }
+            Platform.runLater(() -> {
+                patientsListContainer.getChildren().clear();
+                for (Appointment appt : confirmed) {
+                    patientsListContainer.getChildren().add(createContactNode(appt));
+                }
+            });
+        });
     }
 
-    public void loadChatMessages(List<ChatMessage> messages) {
-        chatMessagesContainer.getChildren().clear();
+    private void initSocket() {
+        try {
+            URI uri = URI.create("http://localhost:4000");
+            IO.Options options = IO.Options.builder().setTransports(new String[]{"websocket"}).build();
+            socket = IO.socket(uri, options);
 
-        // Add "Today" label separator
-        Label dateLabel = new Label("Today");
-        dateLabel.setTextFill(Color.web("#b2b2b2"));
-        dateLabel.setFont(new Font(10));
-        dateLabel.setMaxWidth(Double.MAX_VALUE);
-        dateLabel.setAlignment(Pos.CENTER);
-        chatMessagesContainer.getChildren().add(dateLabel);
+            socket.on(Socket.EVENT_CONNECT, args -> System.out.println("✅ Socket Connected"));
 
-        for (ChatMessage msg : messages) {
-            appendMessage(msg);
-        }
+            socket.on("receive_message", args -> {
+                JSONObject data = (JSONObject) args[0];
+                Platform.runLater(() -> handleIncomingMessage(data));
+            });
+
+            socket.connect();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public void appendMessage(ChatMessage msg) {
-        HBox container = new HBox();
-        container.setAlignment(msg.isSentByMe() ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+    private void handleIncomingMessage(JSONObject data) {
+        try {
+            String room = data.optString("room");
+            String senderId = data.optString("sender"); // This is the Patient's ID
+            String content = data.optString("message");
+            String timestamp = data.optString("timestamp", Instant.now().toString());
 
-        VBox bubble = createBubble(msg);
-        container.getChildren().add(bubble);
+            if (activeAppointment == null) return;
 
-        chatMessagesContainer.getChildren().add(container);
+            String currentRoomId = "room_" + activeAppointment.getPatientId() + "_" + currentDoctorId;
+
+            // Ensure message is for this room and NOT sent by me
+            if (room.equals(currentRoomId) && !senderId.equals(currentDoctorId)) {
+
+                // --- FIX: Pass the 'senderId' to the new constructor ---
+                // This prevents the app from thinking YOU sent it.
+                ChatMessage msg = new ChatMessage(content, timestamp, senderId, false);
+
+                appendMessage(msg);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
     }
-
-    // ==========================================================
-    //                 UI GENERATION LOGIC
-    // ==========================================================
 
     @FXML
     private void onSendMessage() {
         String text = messageInputField.getText().trim();
-        if (text.isEmpty()) return;
+        if (text.isEmpty() || activeAppointment == null) return;
 
-        String time = new SimpleDateFormat("HH:mm").format(new Date());
+        // 1. Validate Patient ID (Fix for "Unknown" issue)
+        String patientId = activeAppointment.getPatientId();
+        if (patientId == null || patientId.isEmpty()) {
+            System.err.println("❌ ERROR: Patient ID is missing. Cannot send message.");
+            return;
+        }
 
-        // 1. Update UI immediately
-        ChatMessage myMsg = new ChatMessage(text, time, true);
-        appendMessage(myMsg);
+        String roomId = "room_" + patientId + "_" + currentDoctorId;
+
+        // 2. Update UI (Optimistic)
+        // For UI display, we use local time HH:mm
+        String displayTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+        appendMessage(new ChatMessage(text, displayTime, true));
         messageInputField.clear();
 
-        // 2. TODO: SEND TO BACKEND HERE
+        // 3. Send to Server (FIXED DATE FORMAT)
+        if (socket != null && socket.connected()) {
+            JSONObject msgObj = new JSONObject();
+            try {
+                msgObj.put("room", roomId);
+                msgObj.put("sender", currentDoctorId);
+                msgObj.put("message", text);
+                msgObj.put("type", "text");
+                // --- FIX: Use ISO-8601 Standard ---
+                msgObj.put("timestamp", Instant.now().toString());
+
+                socket.emit("send_message", msgObj);
+            } catch (Exception e) { e.printStackTrace(); }
+        }
     }
 
-    // --- Sidebar Item Builder ---
-    private HBox createContactNode(ChatContact contact) {
+    private HBox createContactNode(Appointment appt) {
+        boolean isActive = isAppointmentActive(appt);
+
         HBox row = new HBox();
         row.getStyleClass().add("contact-item");
         row.setAlignment(Pos.CENTER_LEFT);
         row.setSpacing(10);
         row.setPadding(new Insets(10));
 
-        // Avatar Area
-        AnchorPane avatarPane = new AnchorPane();
-        Circle baseCircle = new Circle(20, Color.TRANSPARENT);
-        baseCircle.setStroke(Color.web("#e1e1e1"));
-        Circle statusDot = new Circle(5, contact.isOnline() ? Color.web("#2ecc71") : Color.GRAY);
-        statusDot.setStroke(Color.WHITE);
-        AnchorPane.setRightAnchor(statusDot, 0.0);
-        AnchorPane.setTopAnchor(statusDot, 0.0);
-        avatarPane.getChildren().addAll(baseCircle, statusDot);
+        Circle statusDot = new Circle(5, isActive ? Color.web("#2ecc71") : Color.GRAY);
 
-        // Text Area
         VBox textBox = new VBox();
-        HBox.setHgrow(textBox, Priority.ALWAYS);
-
-        HBox topRow = new HBox(5);
-        topRow.setAlignment(Pos.CENTER_LEFT);
-        Label nameLbl = new Label(contact.getName());
+        Label nameLbl = new Label(appt.getPatientName());
         nameLbl.setStyle("-fx-font-weight: bold;");
-        // NOTE: I removed hardcoded colors here so CSS can control it if needed.
+        Label timeLbl = new Label(appt.getStartTime() + " - " + appt.getEndTime());
+        textBox.getChildren().addAll(nameLbl, timeLbl);
 
-        Label timeLbl = new Label(contact.getTime());
-        timeLbl.setTextFill(Color.web("#9da3ae"));
-        timeLbl.setFont(new Font(10));
+        row.getChildren().addAll(statusDot, textBox);
 
-        Pane spacer = new Pane();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        topRow.getChildren().addAll(nameLbl, spacer, timeLbl);
-
-        HBox bottomRow = new HBox();
-        Label msgLbl = new Label(contact.getLastMessage());
-        msgLbl.setTextFill(Color.web("#6e7382"));
-
-        Pane spacer2 = new Pane();
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
-        bottomRow.getChildren().addAll(msgLbl, spacer2);
-
-        // Unread Badge
-        if (contact.getUnreadCount() > 0) {
-            Label badge = new Label(String.valueOf(contact.getUnreadCount()));
-            badge.setStyle("-fx-background-color: #0944ef; -fx-background-radius: 10; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 10;");
-            badge.setMinSize(18, 18);
-            badge.setAlignment(Pos.CENTER);
-            bottomRow.getChildren().add(badge);
-        }
-
-        textBox.getChildren().addAll(topRow, bottomRow);
-        row.getChildren().addAll(avatarPane, textBox);
-
-        // Click Event
         row.setOnMouseClicked(e -> {
-            this.activeContact = contact;
-            currentChatNameLabel.setText(contact.getName());
-            currentChatStatusLabel.setText(contact.isOnline() ? "Online" : "Offline");
-            currentChatStatusLabel.setTextFill(contact.isOnline() ? Color.web("#2ecc71") : Color.GRAY);
+            this.activeAppointment = appt;
+            currentChatNameLabel.setText(appt.getPatientName());
 
-            // Clear chat for demo
             chatMessagesContainer.getChildren().clear();
+            messageInputField.setDisable(!isActive);
+
+            // Construct Room ID
+            if (appt.getPatientId() == null || appt.getPatientId().isEmpty()) {
+                System.out.println("❌ WARNING: Patient ID is empty. Chat will not work.");
+                return;
+            }
+
+            String roomId = "room_" + appt.getPatientId() + "_" + currentDoctorId;
+            System.out.println("Joining Room: " + roomId);
+
+            if(socket != null) socket.emit("join_room", roomId);
+
+            apiService.getChatHistory(roomId).thenAccept(messages -> {
+                Platform.runLater(() -> {
+                    for (ChatMessage msg : messages) {
+                        appendMessage(msg);
+                    }
+                });
+            });
         });
 
         return row;
     }
 
-    // --- Message Bubble Builder ---
-    private VBox createBubble(ChatMessage msg) {
+    // ... (Keep appendMessage, createBubble, isAppointmentActive as they were) ...
+    private void appendMessage(ChatMessage msg) {
+        HBox container = new HBox();
+        container.setAlignment(msg.isSentByMe() ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+
         VBox bubble = new VBox();
         bubble.setMaxWidth(400);
         bubble.getStyleClass().add(msg.isSentByMe() ? "message-bubble-sent" : "message-bubble-received");
 
         Label textLbl = new Label(msg.getContent());
         textLbl.setWrapText(true);
-
-        // --- CHANGE MADE: REMOVED Manual Color Setting ---
-        // textLbl.setTextFill(...) was removed here.
-        // Now CSS (.message-bubble-received .label) will make text dark,
-        // and (.message-bubble-sent .label) will make text white.
-
         if(msg.isSentByMe()) {
             textLbl.setStyle("-fx-font-weight: bold;");
         }
 
         Label timeLbl = new Label(msg.getTimestamp());
         timeLbl.setFont(new Font(9));
-        // We keep the time color soft gray, but ensure it's visible
+        // Force color if CSS fails
         timeLbl.setTextFill(Color.web(msg.isSentByMe() ? "#e4e4e4" : "#6e7382"));
-        timeLbl.setAlignment(Pos.BOTTOM_RIGHT);
-        timeLbl.setMaxWidth(Double.MAX_VALUE);
-        VBox.setMargin(timeLbl, new Insets(5, 0, 0, 0));
 
         bubble.getChildren().addAll(textLbl, timeLbl);
-        return bubble;
+        container.getChildren().add(bubble);
+        chatMessagesContainer.getChildren().add(container);
     }
 
-    private void loadTestData() {
-        List<ChatContact> contacts = new ArrayList<>();
-        contacts.add(new ChatContact("1", "Patient Name", "Awesome!", "16:45", 2, true));
-        contacts.add(new ChatContact("2", "Dr. Sarah", "Please check file.", "12:30", 0, false));
-        loadContactList(contacts);
+    private boolean isAppointmentActive(Appointment appt) {
+        // ... (Keep your existing date logic) ...
+        try {
+            ZonedDateTime utcDate = ZonedDateTime.parse(appt.getDate());
+            LocalDateTime apptDateLocal = utcDate.withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime now = LocalDateTime.now();
 
-        List<ChatMessage> msgs = new ArrayList<>();
-        msgs.add(new ChatMessage("Hello, are the results ready?", "15:42", false));
-        msgs.add(new ChatMessage("Yes, sending them now.", "15:44", true));
-        loadChatMessages(msgs);
+            boolean isSameDay = apptDateLocal.toLocalDate().isEqual(now.toLocalDate());
+            if (!isSameDay) return false;
+
+            LocalTime startTime = LocalTime.parse(appt.getStartTime());
+            LocalTime endTime = LocalTime.parse(appt.getEndTime());
+            LocalTime nowTime = now.toLocalTime();
+
+            return nowTime.isAfter(startTime.minusMinutes(1)) && nowTime.isBefore(endTime.plusMinutes(1));
+        } catch (Exception e) { return false; }
     }
 }
