@@ -2,35 +2,29 @@ package com.example.auradesktop.models;
 
 import com.google.gson.annotations.SerializedName;
 import com.example.auradesktop.UserSession;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ChatMessage {
 
-    // Matches MongoDB field "message"
     @SerializedName("message")
     private String content;
 
-    // Matches MongoDB field "sender"
     @SerializedName("sender")
     private String senderId;
 
-    // Matches MongoDB field "timestamp"
     @SerializedName("timestamp")
     private String timestamp;
 
-    // Matches MongoDB field "type" (text/image)
     @SerializedName("type")
-    private String type;
+    private String type; // "text" or "image"
 
-    // Matches MongoDB field "imageUrl" (optional)
-    @SerializedName("imageUrl")
+    @SerializedName(value = "imageUrl", alternate={"image_url", "image"})
     private String imageUrl;
 
     // Internal flag for UI (not in DB)
     private boolean isSentByMe;
 
-    // --- Constructor for Sending (UI -> Server) ---
+    // --- 1. Constructor for Sending (UI -> Server) ---
+    // Used when YOU send a text message
     public ChatMessage(String content, String timestamp, boolean isSentByMe) {
         this.content = content;
         this.timestamp = timestamp;
@@ -39,27 +33,51 @@ public class ChatMessage {
         this.type = "text";
     }
 
+    // --- 2. Constructor for Receiving Text ---
+    // Used when receiving text from Patient
     public ChatMessage(String content, String timestamp, String senderId, boolean isSentByMe) {
         this.content = content;
         this.timestamp = timestamp;
-        this.senderId = senderId; // <--- Sets the ACTUAL sender (The Patient)
+        this.senderId = senderId;
         this.isSentByMe = isSentByMe;
         this.type = "text";
+    }
+
+    // --- 3. Constructor for Receiving Images ---
+    // Used when receiving an image from Patient
+    public ChatMessage(String content, String timestamp, String senderId, boolean isSentByMe, String imageUrl) {
+        this.content = content; // Can be a caption or empty
+        this.timestamp = timestamp;
+        this.senderId = senderId;
+        this.isSentByMe = isSentByMe;
+        this.type = "image";     // <--- Set Type
+        this.imageUrl = imageUrl; // <--- Store URL
     }
 
     // --- Getters ---
     public String getContent() { return content; }
     public String getSenderId() { return senderId; }
-    public String getType() { return type; }
-    public String getImageUrl() { return imageUrl; }
+    public String getType() {
+        // FIX: If we have an image URL, this IS an image message,
+        // regardless of what the 'type' field says.
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            return "image";
+        }
+        return type;
+    }
+// In ChatMessage.java
 
+    public String getImageUrl() {
+        if (imageUrl == null) return null;
+
+        // FIX: Android sends '10.0.2.2', but Desktop needs 'localhost'
+        return imageUrl.replace("10.0.2.2", "localhost");
+    }
     public String getTimestamp() {
-        // Try to format the ISO string (2025-12-12T10:00:00) to HH:mm
         try {
             if (timestamp != null && timestamp.length() > 10) {
-                // Simple parser assuming ISO format
-                String timePart = timestamp.substring(11, 16);
-                return timePart;
+                // Simple parser assuming ISO format (2025-12-12T10:00...)
+                return timestamp.substring(11, 16);
             }
         } catch (Exception e) {
             // ignore
@@ -69,10 +87,8 @@ public class ChatMessage {
 
     // --- CRITICAL LOGIC: Left vs Right Bubble ---
     public boolean isSentByMe() {
-        // If we set it manually (when typing), return true
         if (isSentByMe) return true;
-
-        // Otherwise check the ID against the logged-in Doctor
+        // Check sender ID against logged-in Doctor ID
         String myId = UserSession.getInstance().getDoctorId();
         return senderId != null && senderId.equals(myId);
     }
