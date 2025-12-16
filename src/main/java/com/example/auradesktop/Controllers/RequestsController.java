@@ -19,10 +19,14 @@ import java.util.stream.Collectors;
 
 public class RequestsController implements Initializable {
 
-    @FXML private TableView<Appointment> requestsTable;
-    @FXML private TableColumn<Appointment, String> nameColumn;
-    @FXML private TableColumn<Appointment, String> timeColumn;
-    @FXML private TableColumn<Appointment, Void> statusColumn;
+    @FXML
+    private TableView<Appointment> requestsTable;
+    @FXML
+    private TableColumn<Appointment, String> nameColumn;
+    @FXML
+    private TableColumn<Appointment, String> timeColumn;
+    @FXML
+    private TableColumn<Appointment, Void> statusColumn;
 
     private ObservableList<Appointment> requestList = FXCollections.observableArrayList();
     private DoctorApiService apiService;
@@ -31,32 +35,68 @@ public class RequestsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         apiService = new DoctorApiService();
 
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("patientName")); // Matches getter in model
+        // 1. Setup Columns
+        // Ensure Appointment.java has getPatientName() and getStartTime()
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("patientName"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
 
+        // 2. Add Buttons
         addButtonToTable();
+
+        // 3. Load Data
         loadPendingAppointments();
     }
 
-    // In RequestsController.java
-
     private void loadPendingAppointments() {
         String doctorId = UserSession.getInstance().getDoctorId();
+        System.out.println("=== REQUESTS SCREEN DEBUG ===");
+        System.out.println("Doctor ID from session: " + doctorId);
+
+        if (doctorId == null || doctorId.isEmpty()) {
+            System.out.println("❌ ERROR: Doctor ID is null or empty!");
+            return;
+        }
 
         apiService.getAppointments(doctorId).thenAccept(appointments -> {
-            System.out.println("Total fetched: " + appointments.size());
+            System.out.println("API Response received.");
 
-            // --- FIX: CHANGE "pending" TO "requested" ---
+            if (appointments == null) {
+                System.out.println("❌ API returned null!");
+                return;
+            }
+
+            System.out.println("Total fetched from DB: " + appointments.size());
+
+            // DEBUG: Print each appointment details
+            for (var appt : appointments) {
+                System.out.println("  📋 ID: " + appt.getId() +
+                        " | Patient: " + appt.getPatientName() +
+                        " | Status: '" + appt.getStatus() + "'");
+            }
+
+            // --- FILTER LOGIC ---
             var pending = appointments.stream()
+                    // Only show "requested" items in this table
                     .filter(a -> "requested".equalsIgnoreCase(a.getStatus()))
                     .collect(Collectors.toList());
 
-            System.out.println("Filtered requests: " + pending.size());
+            System.out.println("Filtered (Visible in Table): " + pending.size());
 
             Platform.runLater(() -> {
                 requestList.setAll(pending);
                 requestsTable.setItems(requestList);
+                requestsTable.refresh(); // Force table refresh
+
+                if (pending.isEmpty()) {
+                    System.out.println("Table is empty because no appointments have status 'requested'");
+                } else {
+                    System.out.println("✅ Added " + pending.size() + " items to table");
+                }
             });
+        }).exceptionally(ex -> {
+            System.out.println("❌ API Error: " + ex.getMessage());
+            ex.printStackTrace();
+            return null;
         });
     }
 
@@ -99,10 +139,14 @@ public class RequestsController implements Initializable {
         apiService.updateStatus(appt.getId(), status).thenAccept(success -> {
             Platform.runLater(() -> {
                 if (success) {
-                    requestList.remove(appt); // Remove row from table
-                    System.out.println("Appointment " + status);
+                    // Remove from the table immediately because it's no longer "requested"
+                    requestList.remove(appt);
+                    System.out.println("Appointment marked as " + status);
+
+                    // If confirmed, it will now appear in the CHAT screen (PatientsController)
                 } else {
-                    System.err.println("Failed to update status");
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to update status");
+                    alert.show();
                 }
             });
         });

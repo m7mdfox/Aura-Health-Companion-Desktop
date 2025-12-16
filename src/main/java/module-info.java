@@ -23,9 +23,12 @@ module Aura.Desktop {
     opens com.example.auradesktop.Controllers to javafx.fxml;
 
     // Allow GSON (JSON) AND JavaFX (Tables) to access Models
-    // This fixes your crash:
     opens com.example.auradesktop.models to com.google.gson, javafx.base;
 
-    // If you use PropertyValueFactory in other packages, you might need to export/open them too.
+    // Allow GSON to access custom deserializers in utils package
+    opens com.example.auradesktop.utils to com.google.gson;
+
+    // If you use PropertyValueFactory in other packages, you might need to
+    // export/open them too.
     exports com.example.auradesktop;
 }

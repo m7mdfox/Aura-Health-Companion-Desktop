@@ -1,15 +1,32 @@
 package com.example.auradesktop.models;
 
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.example.auradesktop.utils.MongoDateDeserializer;
+import com.example.auradesktop.utils.MongoObjectIdDeserializer;
 
 public class Appointment {
 
-    // Maps JSON "_id" to Java "id"
     @SerializedName("_id")
+    @JsonAdapter(MongoObjectIdDeserializer.class)
     private String id;
 
-    // Maps JSON "appointment_date" to Java "date"
+    // Handles both plain string and MongoDB ObjectId format {"$oid": "..."}
+    @SerializedName("patient_id")
+    @JsonAdapter(MongoObjectIdDeserializer.class)
+    private String patientId;
+
+    // FIX 2: This matches the new JSON field from the server
+    @SerializedName("patient_name")
+    private String patientName;
+
+    // FIX 3: Receive email as well if you need it
+    @SerializedName("patient_email")
+    private String patientEmail;
+
+    // Handles MongoDB date format {"$date": "..."}
     @SerializedName("appointment_date")
+    @JsonAdapter(MongoDateDeserializer.class)
     private String date;
 
     @SerializedName("start_time")
@@ -21,41 +38,33 @@ public class Appointment {
     @SerializedName("status")
     private String status;
 
-    @SerializedName("type")
-    private String type;
+    // --- Simple Getters (No more inner classes) ---
 
-    // Maps JSON "patient_id" (which is an Object because of .populate)
-    @SerializedName("patient_id")
-    private PatientInfo patient;
-
-    // --- Inner Class for Patient Info ---
-
-    public static class PatientInfo {
-        @SerializedName("_id")
-        private String id;
-
-        // --- FIX: Map database "full_name" to Java "name" ---
-        @SerializedName("full_name")
-        private String name;
-
-        public String getName() { return name; }
-        public String getId() { return id; }
-    }
-
-    // --- Getters ---
-    public String getId() { return id; }
-    public String getDate() { return date; }
-    public String getStartTime() { return startTime; }
-    public String getEndTime() { return endTime; }
-    public String getStatus() { return status; }
-    public String getType() { return type; }
-
-    // --- Helpers ---
     public String getPatientName() {
-        return (patient != null) ? patient.getName() : "Unknown";
+        return (patientName != null) ? patientName : "Unknown";
     }
 
     public String getPatientId() {
-        return (patient != null) ? patient.getId() : "";
+        return patientId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }
