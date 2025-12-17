@@ -23,12 +23,12 @@
             </ImageView>
          </children>
       </Group>
-      <DatePicker layoutX="23.0" layoutY="151.0" prefHeight="33.0" prefWidth="251.0" stylesheets="@datepicker.css" />
-      <TableView layoutX="14.0" layoutY="204.0" prefHeight="287.0" prefWidth="842.0" stylesheets="@tablestyle.css">
+      <DatePicker fx:id="datePicker" layoutX="23.0" layoutY="151.0" prefHeight="33.0" prefWidth="251.0" stylesheets="@datepicker.css" />
+      <TableView fx:id="appointmentsTable" layoutX="14.0" layoutY="204.0" prefHeight="287.0" prefWidth="842.0" stylesheets="@tablestyle.css">
         <columns>
-          <TableColumn prefWidth="116.79998207092285" text="Patient Name" />
-          <TableColumn prefWidth="124.0" text="Time" />
-            <TableColumn prefWidth="602.3999938964844" text="Description" />
+          <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Patient Name" />
+          <TableColumn fx:id="timeColumn" prefWidth="150.0" text="Time" />
+          <TableColumn fx:id="notesColumn" prefWidth="490.0" text="Description" />
         </columns>
       </TableView>
       <Label layoutX="31.0" layoutY="125.0" prefHeight="18.0" prefWidth="152.0" text="Select the Date " textFill="#031563">

@@ -38,6 +38,9 @@ public class Appointment {
     @SerializedName("status")
     private String status;
 
+    @SerializedName("notes")
+    private String notes;
+
     // --- Simple Getters (No more inner classes) ---
 
     public String getPatientName() {
@@ -66,5 +69,16 @@ public class Appointment {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getNotes() {
+        return (notes != null) ? notes : "";
+    }
+
+    /**
+     * Helper method for calendar display - returns "HH:mm - HH:mm" format
+     */
+    public String getTimeRange() {
+        return startTime + " - " + endTime;
     }
 }
