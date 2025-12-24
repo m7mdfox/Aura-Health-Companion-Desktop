@@ -32,6 +32,11 @@ public class TopBarController {
         loadView("/com/example/auradesktop/Requests.fxml", event);
     }
 
+    @FXML
+    public void goAIModels(ActionEvent event) {
+        loadView("/com/example/auradesktop/AIModels.fxml", event);
+    }
+
     private void loadView(String fxmlPath, ActionEvent event) {
         try {
             // Try to replace only the center content if the current root is a BorderPane (Main.fxml approach)

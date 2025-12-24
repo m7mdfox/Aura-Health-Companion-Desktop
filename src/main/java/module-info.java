@@ -11,6 +11,9 @@ module Aura.Desktop {
     // Socket.IO dependencies
     requires socket.io.client;
     requires engine.io.client;
+    requires kernel;
+    requires io;
+    requires layout;
 
     // --- EXPORTS ---
     // Allow JavaFX Graphics to start the App

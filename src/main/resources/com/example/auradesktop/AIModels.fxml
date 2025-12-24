@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="522.0" prefWidth="869.0" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F2F7FF;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auradesktop.Controllers.AIModelsController">
+   <children>
+      <fx:include fx:id="topBar" source="TopBar.fxml" />
+      
+      <Label layoutX="40.0" layoutY="80.0" text="AI Diagnostic Models" textFill="#00bfa5">
+         <font>
+            <Font name="System Bold" size="28.0" />
+         </font>
+      </Label>
+      
+      <Label layoutX="40.0" layoutY="120.0" text="Select a model to assist in diagnosis" textFill="#a1a1a1">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+
+      <FlowPane layoutX="40.0" layoutY="160.0" prefHeight="340.0" prefWidth="790.0" hgap="20.0" vgap="20.0">
+         <children>
+            <!-- X-Ray Analysis Card -->
+             <VBox prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0); -fx-padding: 15;">
+               <children>
+                  <Label text="Lung Disease" textFill="#0878f2">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label wrapText="true" text="Upload Chest X-Rays for pneumonia &amp; lung analysis." textFill="#666666" VBox.vgrow="ALWAYS" />
+                  <Button text="Launch" onAction="#goXRayAnalysis" style="-fx-background-color: #0878f2; -fx-text-fill: white; -fx-background-radius: 15;"/>
+               </children>
+            </VBox>
+
+            <!-- Bone Fracture Card -->
+            <VBox prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0); -fx-padding: 15;">
+               <children>
+                  <Label text="Bone Fractures" textFill="#ff9800">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label wrapText="true" text="Analyze X-Rays for bone fractures and trauma." textFill="#666666" VBox.vgrow="ALWAYS" />
+                  <Button text="Launch" onAction="#goBoneAnalysis" style="-fx-background-color: #ff9800; -fx-text-fill: white; -fx-background-radius: 15;"/>
+               </children>
+            </VBox>
+
+            <!-- Brain Analysis Card -->
+            <VBox prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0); -fx-padding: 15;">
+               <children>
+                  <Label text="Brain &amp; Nerves" textFill="#e91e63">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label wrapText="true" text="Detect strokes, tumors, and bleeding from CT/MRI." textFill="#666666" VBox.vgrow="ALWAYS" />
+                  <Button text="Launch" onAction="#goBrainAnalysis" style="-fx-background-color: #e91e63; -fx-text-fill: white; -fx-background-radius: 15;"/>
+               </children>
+            </VBox>
+
+            <!-- Dental Analysis Card -->
+            <VBox prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0); -fx-padding: 15;">
+               <children>
+                  <Label text="Teeth &amp; Jaw" textFill="#673ab7">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label wrapText="true" text="Check for cavities, roots, and impacted wisdom teeth." textFill="#666666" VBox.vgrow="ALWAYS" />
+                  <Button text="Launch" onAction="#goDentalAnalysis" style="-fx-background-color: #673ab7; -fx-text-fill: white; -fx-background-radius: 15;"/>
+               </children>
+            </VBox>
+
+            <!-- Eye Analysis Card -->
+            <VBox prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0); -fx-padding: 15;">
+               <children>
+                  <Label text="Eye Disease" textFill="#009688">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label wrapText="true" text="Analyze retinal images for Glaucoma, Cataracts, etc." textFill="#666666" VBox.vgrow="ALWAYS" />
+                  <Button text="Launch" onAction="#goEyeAnalysis" style="-fx-background-color: #009688; -fx-text-fill: white; -fx-background-radius: 15;"/>
+               </children>
+            </VBox>
+
+         </children>
+      </FlowPane>
+   </children>
+</AnchorPane>
